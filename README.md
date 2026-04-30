@@ -188,7 +188,12 @@ Permite realizar backups de la base de datos `dbventas` para proteger la informa
 - Microsoft. *Windows Forms para .NET*. https://learn.microsoft.com/es-es/dotnet/desktop/winforms/
 
 
-#tarea 2 miercoles 29/04/2026
+# Tarea 2 miercoles 29/04/2026
+
+
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/cfc82926-ca48-426e-99fd-a9c3e3369e7f" />
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/78fe536d-6c4f-4dc0-9c8b-30aed71a06e1" />
+
 
 CREATE DATABASE sistema_ventas;
 USE sistema_ventas;
