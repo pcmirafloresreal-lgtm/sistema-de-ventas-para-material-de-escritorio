@@ -188,120 +188,193 @@ Permite realizar backups de la base de datos `dbventas` para proteger la informa
 - Microsoft. *Windows Forms para .NET*. https://learn.microsoft.com/es-es/dotnet/desktop/winforms/
 
 
-# Tarea 2 miercoles 29/04/2026
+# Tarea 2 – Miércoles 29/04/2026
 
+## 🗄️ Base de Datos – Sistema de Ventas
+
+Script SQL para crear la base de datos completa del sistema de ventas con todas sus tablas y relaciones.
+
+---
+
+## 📁 Crear y seleccionar la base de datos
+
+```sql
+CREATE DATABASE sistema_ventas;
+USE sistema_ventas;
+```
+
+---
+
+## 📋 Tablas
+
+### 👤 Usuarios
+Almacena las cuentas de acceso al sistema con su rol y estado.
+```sql
+CREATE TABLE usuarios (
+    id_usuario  INT PRIMARY KEY AUTO_INCREMENT,
+    nombre      VARCHAR(100),
+    usuario     VARCHAR(50),
+    contrasena  VARCHAR(100),
+    rol         VARCHAR(20),
+    estado      BIT
+);
+```
+
+---
+
+### 🧑‍💼 Clientes
+Datos personales y de contacto de los clientes.
+```sql
+CREATE TABLE clientes (
+    id_cliente  INT PRIMARY KEY AUTO_INCREMENT,
+    nombre      VARCHAR(100),
+    ci          VARCHAR(20),
+    telefono    VARCHAR(20),
+    direccion   VARCHAR(150),
+    email       VARCHAR(100),
+    estado      BIT
+);
+```
+
+---
+
+### 🏷️ Categorías
+Clasificación de los productos del sistema.
+```sql
+CREATE TABLE categorias (
+    id_categoria  INT PRIMARY KEY AUTO_INCREMENT,
+    nombre        VARCHAR(100),
+    descripcion   VARCHAR(150),
+    estado        BIT
+);
+```
+
+---
+
+### 🏭 Marcas
+Marcas asociadas a los productos.
+```sql
+CREATE TABLE marcas (
+    id_marca     INT PRIMARY KEY AUTO_INCREMENT,
+    nombre       VARCHAR(100),
+    descripcion  VARCHAR(150),
+    estado       BIT
+);
+```
+
+---
+
+### 📦 Productos
+Artículos disponibles para la venta, vinculados a categoría y marca.
+```sql
+CREATE TABLE productos (
+    id_producto   INT PRIMARY KEY AUTO_INCREMENT,
+    codigo        VARCHAR(50),
+    nombre        VARCHAR(150),
+    descripcion   VARCHAR(255),
+    precio_venta  DECIMAL(10,2),
+    stock         INT,
+    id_categoria  INT,
+    id_marca      INT,
+    estado        BIT,
+    FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria),
+    FOREIGN KEY (id_marca)     REFERENCES marcas(id_marca)
+);
+```
+
+---
+
+### 🚚 Proveedores
+Empresas o personas que suministran los productos.
+```sql
+CREATE TABLE proveedores (
+    id_proveedor  INT PRIMARY KEY AUTO_INCREMENT,
+    nombre        VARCHAR(100),
+    telefono      VARCHAR(20),
+    direccion     VARCHAR(150),
+    email         VARCHAR(100),
+    estado        BIT
+);
+```
+
+---
+
+### 🛒 Ventas
+Cabecera de cada transacción de venta realizada.
+```sql
+CREATE TABLE ventas (
+    id_venta      INT PRIMARY KEY AUTO_INCREMENT,
+    fecha         DATETIME,
+    id_cliente    INT,
+    id_usuario    INT,
+    total         DECIMAL(10,2),
+    descuento     DECIMAL(10,2),
+    impuesto      DECIMAL(10,2),
+    monto_pagado  DECIMAL(10,2),
+    estado        BIT,
+    FOREIGN KEY (id_cliente)  REFERENCES clientes(id_cliente),
+    FOREIGN KEY (id_usuario)  REFERENCES usuarios(id_usuario)
+);
+```
+
+---
+
+### 🧾 Detalle de Venta
+Línea de productos incluidos en cada venta.
+```sql
+CREATE TABLE detalle_venta (
+    id_detalle       INT PRIMARY KEY AUTO_INCREMENT,
+    id_venta         INT,
+    id_producto      INT,
+    cantidad         INT,
+    precio_unitario  DECIMAL(10,2),
+    descuento        DECIMAL(10,2),
+    subtotal         DECIMAL(10,2),
+    FOREIGN KEY (id_venta)    REFERENCES ventas(id_venta),
+    FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
+);
+```
+
+---
+
+### 📥 Compras
+Registro de compras realizadas a proveedores.
+```sql
+CREATE TABLE compras (
+    id_compra     INT PRIMARY KEY AUTO_INCREMENT,
+    fecha         DATETIME,
+    id_proveedor  INT,
+    id_usuario    INT,
+    total         DECIMAL(10,2),
+    estado        BIT,
+    FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor),
+    FOREIGN KEY (id_usuario)   REFERENCES usuarios(id_usuario)
+);
+```
+
+---
+
+### 📋 Detalle de Compra
+Línea de productos incluidos en cada compra.
+```sql
+CREATE TABLE detalle_compra (
+    id_detalle_compra  INT PRIMARY KEY AUTO_INCREMENT,
+    id_compra          INT,
+    id_producto        INT,
+    cantidad           INT,
+    precio_unitario    DECIMAL(10,2),
+    subtotal           DECIMAL(10,2),
+    FOREIGN KEY (id_compra)   REFERENCES compras(id_compra),
+    FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
+);
+```
+
+---
+
+## 🔗 Diagrama de Relaciones
 
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/cfc82926-ca48-426e-99fd-a9c3e3369e7f" />
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/78fe536d-6c4f-4dc0-9c8b-30aed71a06e1" />
-
-
-CREATE DATABASE sistema_ventas;
-USE sistema_ventas;
-
-
-CREATE TABLE usuarios (
-    id_usuario INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100),
-    usuario VARCHAR(50),
-    contrasena VARCHAR(100),
-    rol VARCHAR(20),
-    estado BIT
-);
-
-CREATE TABLE clientes (
-    id_cliente INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100),
-    ci VARCHAR(20),
-    telefono VARCHAR(20),
-    direccion VARCHAR(150),
-    email VARCHAR(100),
-    estado BIT
-);
-
-CREATE TABLE categorias (
-    id_categoria INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100),
-    descripcion VARCHAR(150),
-    estado BIT
-);
-
-CREATE TABLE marcas (
-    id_marca INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100),
-    descripcion VARCHAR(150),
-    estado BIT
-);
-
-CREATE TABLE productos (
-    id_producto INT PRIMARY KEY AUTO_INCREMENT,
-    codigo VARCHAR(50),
-    nombre VARCHAR(150),
-    descripcion VARCHAR(255),
-    precio_venta DECIMAL(10,2),
-    stock INT,
-    id_categoria INT,
-    id_marca INT,
-    estado BIT,
-    FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria),
-    FOREIGN KEY (id_marca) REFERENCES marcas(id_marca)
-);
-
-CREATE TABLE proveedores (
-    id_proveedor INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100),
-    telefono VARCHAR(20),
-    direccion VARCHAR(150),
-    email VARCHAR(100),
-    estado BIT
-);
-
-CREATE TABLE ventas (
-    id_venta INT PRIMARY KEY AUTO_INCREMENT,
-    fecha DATETIME,
-    id_cliente INT,
-    id_usuario INT,
-    total DECIMAL(10,2),
-    descuento DECIMAL(10,2),
-    impuesto DECIMAL(10,2),
-    monto_pagado DECIMAL(10,2),
-    estado BIT,
-    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente),
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
-);
-
-CREATE TABLE detalle_venta (
-    id_detalle INT PRIMARY KEY AUTO_INCREMENT,
-    id_venta INT,
-    id_producto INT,
-    cantidad INT,
-    precio_unitario DECIMAL(10,2),
-    descuento DECIMAL(10,2),
-    subtotal DECIMAL(10,2),
-    FOREIGN KEY (id_venta) REFERENCES ventas(id_venta),
-    FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
-);
-
-CREATE TABLE compras (
-    id_compra INT PRIMARY KEY AUTO_INCREMENT,
-    fecha DATETIME,
-    id_proveedor INT,
-    id_usuario INT,
-    total DECIMAL(10,2),
-    estado BIT,
-    FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor),
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
-);
-
-CREATE TABLE detalle_compra (
-    id_detalle_compra INT PRIMARY KEY AUTO_INCREMENT,
-    id_compra INT,
-    id_producto INT,
-    cantidad INT,
-    precio_unitario DECIMAL(10,2),
-    subtotal DECIMAL(10,2),
-    FOREIGN KEY (id_compra) REFERENCES compras(id_compra),
-    FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
-);
 
 <img width="1600" height="845" alt="WhatsApp Image 2026-04-29 at 9 25 53 PM" src="https://github.com/user-attachments/assets/a517c0f4-a431-4cd9-a9bc-6190d302157a" />
 
