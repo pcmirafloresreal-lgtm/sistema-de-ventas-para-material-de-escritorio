@@ -186,3 +186,122 @@ Permite realizar backups de la base de datos `dbventas` para proteger la informa
 - Microsoft. *Documentación de C# y .NET*. https://learn.microsoft.com/es-es/dotnet/csharp/
 - Microsoft. *SQL Server Documentation*. https://learn.microsoft.com/es-es/sql/sql-server/
 - Microsoft. *Windows Forms para .NET*. https://learn.microsoft.com/es-es/dotnet/desktop/winforms/
+
+
+#tarea 2 miercoles 29/04/2026
+
+CREATE DATABASE sistema_ventas;
+USE sistema_ventas;
+
+
+CREATE TABLE usuarios (
+    id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100),
+    usuario VARCHAR(50),
+    contrasena VARCHAR(100),
+    rol VARCHAR(20),
+    estado BIT
+);
+
+CREATE TABLE clientes (
+    id_cliente INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100),
+    ci VARCHAR(20),
+    telefono VARCHAR(20),
+    direccion VARCHAR(150),
+    email VARCHAR(100),
+    estado BIT
+);
+
+CREATE TABLE categorias (
+    id_categoria INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100),
+    descripcion VARCHAR(150),
+    estado BIT
+);
+
+CREATE TABLE marcas (
+    id_marca INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100),
+    descripcion VARCHAR(150),
+    estado BIT
+);
+
+CREATE TABLE productos (
+    id_producto INT PRIMARY KEY AUTO_INCREMENT,
+    codigo VARCHAR(50),
+    nombre VARCHAR(150),
+    descripcion VARCHAR(255),
+    precio_venta DECIMAL(10,2),
+    stock INT,
+    id_categoria INT,
+    id_marca INT,
+    estado BIT,
+    FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria),
+    FOREIGN KEY (id_marca) REFERENCES marcas(id_marca)
+);
+
+CREATE TABLE proveedores (
+    id_proveedor INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100),
+    telefono VARCHAR(20),
+    direccion VARCHAR(150),
+    email VARCHAR(100),
+    estado BIT
+);
+
+CREATE TABLE ventas (
+    id_venta INT PRIMARY KEY AUTO_INCREMENT,
+    fecha DATETIME,
+    id_cliente INT,
+    id_usuario INT,
+    total DECIMAL(10,2),
+    descuento DECIMAL(10,2),
+    impuesto DECIMAL(10,2),
+    monto_pagado DECIMAL(10,2),
+    estado BIT,
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+);
+
+CREATE TABLE detalle_venta (
+    id_detalle INT PRIMARY KEY AUTO_INCREMENT,
+    id_venta INT,
+    id_producto INT,
+    cantidad INT,
+    precio_unitario DECIMAL(10,2),
+    descuento DECIMAL(10,2),
+    subtotal DECIMAL(10,2),
+    FOREIGN KEY (id_venta) REFERENCES ventas(id_venta),
+    FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
+);
+
+CREATE TABLE compras (
+    id_compra INT PRIMARY KEY AUTO_INCREMENT,
+    fecha DATETIME,
+    id_proveedor INT,
+    id_usuario INT,
+    total DECIMAL(10,2),
+    estado BIT,
+    FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+);
+
+CREATE TABLE detalle_compra (
+    id_detalle_compra INT PRIMARY KEY AUTO_INCREMENT,
+    id_compra INT,
+    id_producto INT,
+    cantidad INT,
+    precio_unitario DECIMAL(10,2),
+    subtotal DECIMAL(10,2),
+    FOREIGN KEY (id_compra) REFERENCES compras(id_compra),
+    FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
+);
+
+<img width="1600" height="845" alt="WhatsApp Image 2026-04-29 at 9 25 53 PM" src="https://github.com/user-attachments/assets/a517c0f4-a431-4cd9-a9bc-6190d302157a" />
+
+
+<img width="1600" height="845" alt="WhatsApp Image 2026-04-29 at 9 25 53 PM" src="https://github.com/user-attachments/assets/099ee0d9-af2b-4ad8-be94-1504be0f7f4b" />
+
+<img width="1600" height="847" alt="WhatsApp Image 2026-04-29 at 9 26 18 PM" src="https://github.com/user-attachments/assets/934effb9-dca7-4a20-a3e2-b29db62a9975" />
+
