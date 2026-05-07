@@ -1,32 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Sistema Ventas</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            margin: 40px;
+        }
+
+        .producto{
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+    </style>
+
 </head>
 <body>
 
-<h1>Lista de Productos</h1>
+    <h1>Lista de Productos</h1>
 
-<button onclick="cargarProductos()">Cargar Productos</button>
+    <button onclick="cargarProductos()">
+        Mostrar Productos
+    </button>
 
-<ul id="lista"></ul>
+    <div id="contenedor"></div>
 
-<script>
-function cargarProductos() {
-    fetch('http://localhost:3000/productos')
-    .then(res => res.json())
-    .then(data => {
-        const lista = document.getElementById('lista');
-        lista.innerHTML = "";
+    <script>
 
-        data.forEach(p => {
-            const li = document.createElement('li');
-            li.textContent = p.nombre + " - Bs " + p.precio_venta;
-            lista.appendChild(li);
-        });
-    });
-}
-</script>
+        async function cargarProductos(){
+
+            const respuesta =
+                await fetch(
+                    'http://localhost:3000/productos'
+                );
+
+            const datos =
+                await respuesta.json();
+
+            const contenedor =
+                document.getElementById('contenedor');
+
+            contenedor.innerHTML = '';
+
+            datos.forEach(producto => {
+
+                contenedor.innerHTML += `
+
+                    <div class="producto">
+
+                        <h3>${producto.nombre}</h3>
+
+                        <p>
+                            Precio:
+                            Bs ${producto.precio_venta}
+                        </p>
+
+                        <p>
+                            Stock:
+                            ${producto.stock}
+                        </p>
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+    </script>
 
 </body>
 </html>
