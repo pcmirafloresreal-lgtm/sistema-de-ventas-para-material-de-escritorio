@@ -1,45 +1,104 @@
 const express = require('express');
-const { Pool } = require('pg');
+const mysql = require('mysql2');
 const cors = require('cors');
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
 
-const pool = new Pool({
-    user: 'postgres',
+const db = mysql.createConnection({
     host: 'localhost',
-    database: 'sistema_ventas',
-    password: '123456',
-    port: 5432
+    user: 'root',
+    password: '', // ⚠️ tu contraseña si tienes
+    database: 'sistema_ventas'
 });
 
 
-pool.connect()
-.then(() => console.log('Conectado a PostgreSQL'))
-.catch(err => console.log('Error conexión:', err));
+db.connect((err) => {
 
-
-app.get('/productos', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM productos');
-        res.json(result.rows);
-    } catch (error) {
-        res.json(error);
+    if(err){
+        console.log('Error conexión:', err);
+    }else{
+        console.log('Conectado a MySQL');
     }
+
 });
 
 
-app.get('/clientes', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM clientes');
-        res.json(result.rows);
-    } catch (error) {
-        res.json(error);
-    }
+app.get('/productos', (req, res) => {
+
+    db.query(
+        'SELECT * FROM productos',
+        (err, result) => {
+
+            if(err){
+                res.json(err);
+            }else{
+                res.json(result);
+            }
+
+        }
+    );
+
 });
+
+
+
+app.get('/clientes', (req, res) => {
+
+    db.query(
+        'SELECT * FROM clientes',
+        (err, result) => {
+
+            if(err){
+                res.json(err);
+            }else{
+                res.json(result);
+            }
+
+        }
+    );
+
+});
+
+
+
+app.post('/clientes', (req, res) => {
+
+    const { nombre, ci, telefono } = req.body;
+
+    db.query(
+
+        `INSERT INTO clientes
+        (nombre, ci, telefono)
+        VALUES (?, ?, ?)`,
+
+        [nombre, ci, telefono],
+
+        (err, result) => {
+
+            if(err){
+                res.json(err);
+            }else{
+                res.json({
+                    mensaje: 'Cliente registrado'
+                });
+            }
+
+        }
+
+    );
+
+});
+
+
 
 app.listen(3000, () => {
-    console.log('Servidor en http://localhost:3000');
+
+    console.log(
+        'Servidor ejecutándose en puerto 3000'
+    );
+
 });
