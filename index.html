@@ -5,30 +5,135 @@
     <title>Sistema Ventas</title>
 
     <style>
-
         body{
-            font-family: Arial;
-            margin: 40px;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f6f9;
+            color: #333;
+        }
+
+        header{
+            background: #1f4e79;
+            color: white;
+            padding: 25px 40px;
+            text-align: center;
+        }
+
+        header h1{
+            margin: 0;
+            font-size: 32px;
+        }
+
+        header p{
+            margin-top: 8px;
+            font-size: 16px;
+        }
+
+        .contenedor-principal{
+            margin: 30px 50px;
+        }
+
+        .botones{
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+            margin-bottom: 25px;
+        }
+
+        button{
+            background: #1f4e79;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            margin: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover{
+            background: #163b5c;
+        }
+
+        #contenedor{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
         }
 
         .producto{
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
+            background: white;
+            border-left: 6px solid #1f4e79;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.10);
         }
 
+        .producto h3{
+            color: #1f4e79;
+            margin-top: 0;
+        }
+
+        .producto p{
+            font-size: 15px;
+            margin: 8px 0;
+        }
+
+        .precio{
+            font-weight: bold;
+            color: #0a7a35;
+        }
+
+        .stock{
+            font-weight: bold;
+            color: #d35400;
+        }
+
+        footer{
+            text-align: center;
+            margin-top: 40px;
+            padding: 15px;
+            background: #1f4e79;
+            color: white;
+        }
     </style>
 
 </head>
 <body>
 
-    <h1>Lista de Productos</h1>
+    <header>
+        <h1>Sistema de Ventas</h1>
+        <p>Venta de material de escritorio</p>
+    </header>
 
-    <button onclick="cargarProductos()">
-        Mostrar Productos
-    </button>
+    <div class="contenedor-principal">
 
-    <div id="contenedor"></div>
+        <div class="botones">
+            <button onclick="cargarProductos()">
+                Mostrar Productos
+            </button>
+
+            <button onclick="cargarProductosProcedure()">
+                Productos (Procedure)
+            </button>
+
+            <button onclick="cargarVentas()">
+                Ver Ventas
+            </button>
+
+            <button onclick="cargarCompras()">
+                Ver Compras
+            </button>
+        </div>
+
+        <div id="contenedor"></div>
+
+    </div>
+
+    <footer>
+        Proyecto Sistema de Ventas - Material de Escritorio
+    </footer>
 
     <script>
 
@@ -53,16 +158,165 @@
 
                     <div class="producto">
 
-                        <h3>${producto.nombre}</h3>
+                        <h3>📦 ${producto.nombre}</h3>
 
                         <p>
+                            Código:
+                            ${producto.codigo}
+                        </p>
+
+                        <p class="precio">
                             Precio:
                             Bs ${producto.precio_venta}
                         </p>
 
-                        <p>
+                        <p class="stock">
                             Stock:
                             ${producto.stock}
+                        </p>
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+
+
+        async function cargarProductosProcedure(){
+
+            const respuesta =
+                await fetch(
+                    'http://localhost:3000/listar-productos'
+                );
+
+            const datos =
+                await respuesta.json();
+
+            const contenedor =
+                document.getElementById('contenedor');
+
+            contenedor.innerHTML = '';
+
+            datos.forEach(producto => {
+
+                contenedor.innerHTML += `
+
+                    <div class="producto">
+
+                        <h3>📝 ${producto.nombre}</h3>
+
+                        <p>
+                            Código:
+                            ${producto.codigo}
+                        </p>
+
+                        <p class="precio">
+                            Precio:
+                            Bs ${producto.precio_venta}
+                        </p>
+
+                        <p class="stock">
+                            Stock:
+                            ${producto.stock}
+                        </p>
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+
+
+        async function cargarVentas(){
+
+            const respuesta =
+                await fetch(
+                    'http://localhost:3000/listar-ventas'
+                );
+
+            const datos =
+                await respuesta.json();
+
+            const contenedor =
+                document.getElementById('contenedor');
+
+            contenedor.innerHTML = '';
+
+            datos.forEach(venta => {
+
+                contenedor.innerHTML += `
+
+                    <div class="producto">
+
+                        <h3>🧾 Venta #${venta.id_venta}</h3>
+
+                        <p>
+                            Cliente:
+                            ${venta.cliente}
+                        </p>
+
+                        <p>
+                            Usuario:
+                            ${venta.usuario}
+                        </p>
+
+                        <p class="precio">
+                            Total:
+                            Bs ${venta.total}
+                        </p>
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+
+
+        async function cargarCompras(){
+
+            const respuesta =
+                await fetch(
+                    'http://localhost:3000/listar-compras'
+                );
+
+            const datos =
+                await respuesta.json();
+
+            const contenedor =
+                document.getElementById('contenedor');
+
+            contenedor.innerHTML = '';
+
+            datos.forEach(compra => {
+
+                contenedor.innerHTML += `
+
+                    <div class="producto">
+
+                        <h3>🚚 Compra #${compra.id_compra}</h3>
+
+                        <p>
+                            Proveedor:
+                            ${compra.proveedor}
+                        </p>
+
+                        <p>
+                            Usuario:
+                            ${compra.usuario}
+                        </p>
+
+                        <p class="precio">
+                            Total:
+                            Bs ${compra.total}
                         </p>
 
                     </div>
