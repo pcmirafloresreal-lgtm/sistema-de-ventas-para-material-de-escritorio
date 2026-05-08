@@ -7,15 +7,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
+// 🔥 CONEXIÓN MYSQL
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '', // ⚠️ tu contraseña si tienes
+    password: 'admin1234', // ⚠️ tu contraseña si tienes
     database: 'sistema_ventas'
 });
 
-
+// 🔥 CONECTAR
 db.connect((err) => {
 
     if(err){
@@ -27,6 +27,9 @@ db.connect((err) => {
 });
 
 
+// ==============================
+// 🔥 OBTENER PRODUCTOS
+// ==============================
 app.get('/productos', (req, res) => {
 
     db.query(
@@ -45,7 +48,9 @@ app.get('/productos', (req, res) => {
 });
 
 
-
+// ==============================
+// 🔥 OBTENER CLIENTES
+// ==============================
 app.get('/clientes', (req, res) => {
 
     db.query(
@@ -64,7 +69,9 @@ app.get('/clientes', (req, res) => {
 });
 
 
-
+// ==============================
+// 🔥 INSERTAR CLIENTE
+// ==============================
 app.post('/clientes', (req, res) => {
 
     const { nombre, ci, telefono } = req.body;
@@ -93,8 +100,94 @@ app.post('/clientes', (req, res) => {
 
 });
 
+// =====================================
+// 🔥 PROCEDURE: LISTAR PRODUCTOS
+// =====================================
+
+app.get('/listar-productos', (req, res) => {
+
+    db.query(
+        'CALL listar_productos_disponibles()',
+
+        (err, result) => {
+
+            if(err){
+
+                console.log(err);
+                res.json(err);
+
+            }else{
+
+                res.json(result[0]);
+
+            }
+
+        }
+
+    );
+
+});
 
 
+// =====================================
+// 🔥 PROCEDURE: LISTAR VENTAS
+// =====================================
+
+app.get('/listar-ventas', (req, res) => {
+
+    db.query(
+        'CALL listar_ventas()',
+
+        (err, result) => {
+
+            if(err){
+
+                console.log(err);
+                res.json(err);
+
+            }else{
+
+                res.json(result[0]);
+
+            }
+
+        }
+
+    );
+
+});
+
+
+// =====================================
+// 🔥 PROCEDURE: LISTAR COMPRAS
+// =====================================
+
+app.get('/listar-compras', (req, res) => {
+
+    db.query(
+        'CALL listar_compras()',
+
+        (err, result) => {
+
+            if(err){
+
+                console.log(err);
+                res.json(err);
+
+            }else{
+
+                res.json(result[0]);
+
+            }
+
+        }
+
+    );
+
+});
+// ==============================
+// 🔥 SERVIDOR
+// ==============================
 app.listen(3000, () => {
 
     console.log(
